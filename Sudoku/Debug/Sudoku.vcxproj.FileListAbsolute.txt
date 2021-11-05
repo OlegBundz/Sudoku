@@ -1,0 +1,3 @@
+C:\Projects\Sudoku\Sudoku\Debug\Sudoku.vcxproj.AssemblyReference.cache
+C:\Projects\Sudoku\Sudoku\Debug\Sudoku.Sudoku.resources
+C:\Projects\Sudoku\Sudoku\Debug\Sudoku.vcxproj.GenerateResource.cache
