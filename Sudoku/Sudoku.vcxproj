@@ -120,10 +120,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LevelRadioButton.cpp" />
     <ClCompile Include="Sudoku.cpp" />
     <ClCompile Include="SudokuTable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InputButton.h" />
+    <ClInclude Include="LevelRadioButton.h" />
     <ClInclude Include="Sudoku.h">
       <FileType>CppForm</FileType>
     </ClInclude>
