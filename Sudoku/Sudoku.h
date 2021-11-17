@@ -2,6 +2,7 @@
 #include "SudokuTable.h"
 #include "InputButton.h"
 #include "LevelRadioButton.h"
+#include "SudokuGenerator.h" 
 namespace Sudoku {
 
 	using namespace System;
@@ -36,29 +37,28 @@ namespace Sudoku {
 				delete components;
 			}
 		}
+
 	private: System::Windows::Forms::Panel^ panel1;
 	private: System::Windows::Forms::Panel^ panel2;
-
-		   cli::array<SudokuTable^, 2>^ sudokuTable = gcnew cli::array<SudokuTable^, 2>(9, 9);
+	private: cli::array<SudokuTable^, 2>^ sudokuTable = gcnew cli::array<SudokuTable^, 2>(9, 9);
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::Button^ button3;
 	private: System::Windows::Forms::GroupBox^ levelGroupBox;
+	private: cli::array<String^>^ finalMatrix = gcnew cli:: array<String^>(9);
+	private: cli::array<LevelRadioButton^>^ levelButtons = gcnew cli::array<LevelRadioButton^>(3);
+	private: System::Windows::Forms::Button^ button4;
 
-
-
-
-		   cli::array<LevelRadioButton^>^ levelButtons = gcnew cli::array<LevelRadioButton^>(3);
-
-
-
-		   cli::array<InputButton^, 2>^ inputBattons = gcnew cli::array<InputButton^, 2>(5, 2);
-	protected:
+	private: cli::array<InputButton^, 2>^ inputBattons = gcnew cli::array<InputButton^, 2>(5, 2);
 
 	private:
+		System::String^ ChangeMatrixValue(System::String^,int,char);
 		void CreateTable();
 		void CreateInputButtons();
 		void CreateRadioButtons();
+		void ToDefault();
+		
+		
 		
 		/// <summary>
 		/// Required designer variable.
@@ -78,6 +78,7 @@ namespace Sudoku {
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->levelGroupBox = (gcnew System::Windows::Forms::GroupBox());
+			this->button4 = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// panel1
@@ -97,12 +98,15 @@ namespace Sudoku {
 			// 
 			// button1
 			// 
+			this->button1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->button1->Location = System::Drawing::Point(544, 23);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(150, 50);
 			this->button1->TabIndex = 2;
 			this->button1->Text = L"New Game";
 			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &Sudoku::Start_Button_Click);
 			// 
 			// button2
 			// 
@@ -133,11 +137,22 @@ namespace Sudoku {
 			this->levelGroupBox->TabStop = false;
 			this->levelGroupBox->Text = L"Level";
 			// 
+			// button4
+			// 
+			this->button4->BackColor = System::Drawing::SystemColors::ScrollBar;
+			this->button4->Location = System::Drawing::Point(564, 459);
+			this->button4->Name = L"button4";
+			this->button4->Size = System::Drawing::Size(75, 23);
+			this->button4->TabIndex = 6;
+			this->button4->Text = L"button4";
+			this->button4->UseVisualStyleBackColor = false;
+			// 
 			// Sudoku
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(775, 629);
+			this->Controls->Add(this->button4);
 			this->Controls->Add(this->levelGroupBox);
 			this->Controls->Add(this->button3);
 			this->Controls->Add(this->button2);
@@ -160,8 +175,65 @@ private: System::Void levelRadioButton(System::Object^ sender,  System::EventArg
 
 	
 }
-private: System::Void radioButton1_CheckedChanged_1(System::Object^ sender, System::EventArgs^ e) {
-	
+
+private: System::Void Start_Button_Click(System::Object^ sender, System::EventArgs^ e) {
+	SudokuGenerator sGenerator;
+	sGenerator.Generate();
+	ToDefault();
+
+	for (int i = 0; i < 9; i++)
+	{
+		String^ tempStr = gcnew System::String(sGenerator.GetRow(i).c_str());
+		finalMatrix[i] = tempStr;
+	}
+	/*for (int i = 0; i < 9; i++)
+	{
+		MessageBox::Show(finalMatrix[i]);
+	}*/
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			if (finalMatrix[i][j] != '0') {
+				sudokuTable[i, j]->Text = gcnew System::String(finalMatrix[i][j].ToString());
+				sudokuTable[i, j]->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+					static_cast<System::Byte>(0)));
+				sudokuTable[i, j]->SetLocked(true);
+			}
+			//String^ tempStr = gcnew System::String(finalMatrix[i][j].ToString());
+				
+		}
+	}
+}
+
+	   private: System::Void OnKeyDown(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e)
+	   {
+		   SudokuTable^ temp = (SudokuTable^)sender;
+		   if ((Char::IsDigit(e->KeyChar))&&!temp->GetLocked())
+		   {
+			   temp->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(0)));
+			   finalMatrix[temp->GetPositionX()] = ChangeMatrixValue(finalMatrix[temp->GetPositionX()], temp->GetPositionY(), char((e->KeyChar)-48));
+			   if ((e->KeyChar) != '0') {
+				   temp->Text = (e->KeyChar).ToString();
+			   }
+			   else {
+				   temp->Text = L"";
+			   }
+			   MessageBox::Show(finalMatrix[temp->GetPositionX()]);
+
+		   }
+	   }
+
+			  private: System::Void SudokuTableClick(System::Object^ sender, System::EventArgs^ e)
+			  {
+				  SudokuTable^ temp = (SudokuTable^)sender;
+				  temp->SetLastUsedButton(temp->GetPositionX(), temp->GetPositionY());
+			  }
+
+
+private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) {
+
 }
 };
 }

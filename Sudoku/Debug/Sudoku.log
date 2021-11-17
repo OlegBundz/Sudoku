@@ -1,4 +1,4 @@
 ﻿  Sudoku.cpp
-C:\Projects\Sudoku\Sudoku\LevelRadioButton.h(24): warning C4715: 'LevelRadioButton::GetCommonLevel': not all control paths return a value
+C:\Projects\Sudoku\Sudoku\Sudoku.cpp(14,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   LevelRadioButton.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
   Sudoku.vcxproj -> C:\Projects\Sudoku\Debug\Sudoku.exe

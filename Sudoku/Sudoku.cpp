@@ -1,4 +1,7 @@
+#include<ctime>
 #include "Sudoku.h"
+#include "SudokuGenerator.h"
+
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -8,26 +11,50 @@ int main()
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 	Sudoku::Sudoku game;
+	srand(time(0));
+	//SudokuGenerator sGenerator;
 	Application::Run(%game);
 	return 0;
 }
 
 void Sudoku::Sudoku::CreateTable()
 {
+	bool isColored = true;	
+	int counterX = 0;
+	int counterY = 0;  //For painting buttons
+
 	for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
+			
 			sudokuTable[i, j] = gcnew SudokuTable();
 			sudokuTable[i, j]->Size = System::Drawing::Size(45, 45);
 			sudokuTable[i, j]->Location = System::Drawing::Point(i * 45, j * 45);
-			sudokuTable[i, j]->SetPosition(i, j);
+			sudokuTable[i, j]->SetPosition(i,j);
 			sudokuTable[i, j]->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			sudokuTable[i, j]->Click += gcnew System::EventHandler(this, &Sudoku::SudokuTableClick);
+			sudokuTable[i, j]->KeyPress+=  gcnew System::Windows::Forms::KeyPressEventHandler(this, &Sudoku::OnKeyDown);	
 
+
+			if(isColored)
+			sudokuTable[i, j]->BackColor = System::Drawing::SystemColors::ScrollBar;
+			counterX++;
+			if (counterX > 2)
+			{
+				counterX = 0;
+				isColored = !isColored;
+			}
 			panel1->Controls->Add(sudokuTable[i, j]);
-
+			
 		}
+		counterY++;
+		if (counterY > 2)
+			counterY = 0;
+		else isColored = !isColored;
 	}
+
+
 }
 
 void Sudoku::Sudoku::CreateInputButtons()
@@ -63,6 +90,34 @@ void Sudoku::Sudoku::CreateRadioButtons()
 	levelButtons[1]->level = Medium;
 	levelButtons[2]->Text = L"Hard";
 	levelButtons[2]->level = Hard;
+}
+
+void Sudoku::Sudoku::ToDefault()
+{
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			sudokuTable[i, j]->Text = L"";
+			sudokuTable[i, j]->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+					static_cast<System::Byte>(0)));
+			sudokuTable[i, j]->SetLocked(false);
+		}
+	}
+}
+
+System::String^ Sudoku::Sudoku::ChangeMatrixValue(System::String^ str, int x , char s)
+{
+	System::String^ temp = "";
+	for (int i = 0; i < str->Length; i++)
+	{
+		if (i == x)temp += s;
+		else temp += str[i];
+	}
+	
+
+	return temp;
+	
 }
 //this->radioButton1->CheckedChanged += gcnew System::EventHandler(this, &Sudoku::radioButton1_CheckedChanged_1);
 //this->radioButton1->AutoSize = true;

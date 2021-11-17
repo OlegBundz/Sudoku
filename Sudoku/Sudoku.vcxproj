@@ -122,6 +122,7 @@
   <ItemGroup>
     <ClCompile Include="LevelRadioButton.cpp" />
     <ClCompile Include="Sudoku.cpp" />
+    <ClCompile Include="SudokuGenerator.cpp" />
     <ClCompile Include="SudokuTable.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +131,7 @@
     <ClInclude Include="Sudoku.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="SudokuGenerator.h" />
     <ClInclude Include="SudokuTable.h" />
   </ItemGroup>
   <ItemGroup>

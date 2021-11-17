@@ -1,14 +1,16 @@
 #pragma once
 #include <string>
 
-enum GameLevel {Easy, Medium, Hard};
+enum GameLevel {Easy= 46, Medium = 51, Hard = 56};
 
 ref class LevelRadioButton : public System::Windows::Forms::RadioButton
 {
-public :GameLevel level;
-	   public:	static GameLevel commonLevel;
-public: static void SetCommonLevel(GameLevel);
-	  static System::String^ GetCommonLevel()
+	public :GameLevel level;
+	public:	static GameLevel commonLevel=Easy;
+	public: static void SetCommonLevel(GameLevel);
+	public: static GameLevel GetCommonLevel();
+	 
+	 /* static System::String^ GetCommonLevel()
 	  {
 		  switch (commonLevel)
 		  {
@@ -21,5 +23,5 @@ public: static void SetCommonLevel(GameLevel);
 		  default:
 			  break;
 		  }
-	  }
+	  }*/
 };
